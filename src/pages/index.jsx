@@ -25,23 +25,25 @@ const UserList = () => {
   }, []);
 
   const deleteUser = async id => {
-    try {
-      if (!disabled) {
-        setDisabled(true);
-        const prom = axios.delete(DELETE_USER_API, { data: { id: +id } });
-        await toast.promise(prom, {
-          pending: "Deleting user...",
-          success: "User deleted",
-          error: "Delete fail",
-        });
+    if (window.confirm("Are you sure to delete this user?") === true) {
+      try {
+        if (!disabled) {
+          setDisabled(true);
+          const prom = axios.delete(DELETE_USER_API, { data: { id: +id } });
+          await toast.promise(prom, {
+            pending: "Deleting user...",
+            success: "User deleted",
+            error: "Delete fail",
+          });
 
-        fetchList().then(({ data }) => {
-          setUsers(data);
-          setDisabled(false);
-        });
+          fetchList().then(({ data }) => {
+            setUsers(data);
+            setDisabled(false);
+          });
+        }
+      } catch (error) {
+        setDisabled(false);
       }
-    } catch (error) {
-      setDisabled(false);
     }
   };
   return (
